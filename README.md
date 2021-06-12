@@ -1,2 +1,3 @@
 # faq-chatbot
-FAQ Chatbot built with React and Fla
+
+FAQ Chatbot built with React and Flask.
