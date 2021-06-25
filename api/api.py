@@ -1,7 +1,7 @@
 from flask import Flask
 from atlassian import Confluence
 
-from newspaper import Article
+import re
 import random
 import string
 import json
@@ -19,12 +19,12 @@ nltk.download('stopwords', quiet=True)
 
 # Confluence connection
 try: 
-        url = 'https://liqid-investments.atlassian.net'
+        confluenceUrl = 'https://liqid-investments.atlassian.net/'
         email = ''
         apiToken = ''
 
         confluence = Confluence(
-        url=url,
+        url=confluenceUrl,
         username=email,
         password=apiToken,
         cloud=True)
@@ -49,13 +49,13 @@ def tokenize_user_message(user_input):
 
         return words
 
-""" #Get the intents
+#Get the intents
 with open("intents.json") as file:
         data = json.load(file)
- """
+
 #A function to return a random greeting response to a users greeting
 def greeting_response(user_input):
-        text_list = text.lower().split()
+        text_list = user_input.lower().split()
 
         #Bots greeting response
         bot_greetings = ['howdy', 'hi', 'hey', 'hello', 'ola']
@@ -68,34 +68,26 @@ def greeting_response(user_input):
                         return random.choice(bot_greetings)
 
 # query confluence
+
 def query_confluence(user_input):
 
         try: 
-                page_id = '1968242693'
-                spaceName = 'LS'
-                start= 0
-                limit= 100
-                cql= 'text ~ "' + user_input + '"'
+                cql= 'text ~ "' + user_input + '" and type = page'
+                regex = re.compile('<.*?>')
+                articles_list = []
 
-                """pageSpace = confluence.get_page_space(page_id)
-                pageId = confluence.get_page_id(spaceName, 'Hackathon 1: Teams')"""
-                """ spaceContent = confluence.get_space_content(spaceName, depth="all", start=0, limit=500, content_type='page', expand="body.storage") """
+                response = confluence.cql(cql, start=0, limit=None, expand=None, include_archived_spaces=None, excerpt=None)
 
-                CQLTest = confluence.cql(cql, start=0, limit=None, expand=None, include_archived_spaces=None, excerpt=None)
-                print(len(CQLTest["results"]))
-        
-                """allPages = confluence.get_all_pages_from_space(spaceName, start=start, limit=1, status=None, expand="body.storage", content_type='page')
-                responseLengthMatchesLimit = len(allPages) >= limit
+                for result in response["results"]:
+                        pageUrl = confluenceUrl + 'wiki' + result["url"]
+                        pageId = result['content']['id']
 
-                while responseLengthMatchesLimit:
-                        start= start + limit
+                        page = confluence.get_page_by_id(pageId, expand="body.storage", status=None, version=None)
+                        pageContent = page['body']['storage']['value']
+                        cleanPageContent = re.sub(regex, '', pageContent)
+                        articles_list.append(cleanPageContent)
 
-                        response = confluence.get_all_pages_from_space(spaceName, start=start, limit=limit, status=None, expand="body.storage", content_type='page')
-                        allPages.extend(response)
-                        responseLengthMatchesLimit = len(response) >= limit
-
-                print(type(allPages))"""
-
+                return articles_list
         
         except Exception as e:
                 print (e)
@@ -118,14 +110,12 @@ def index_sort(list_var):
 
 #Query the bot
 def ask_the_bot(user_input):
-
+        
         confluenceResponse = query_confluence(user_input)
-        print(confluenceResponse)
-
-        """         user_input = user_input.lower()
-        sentence_list.append(user_input)
+ 
+        confluenceResponse.append(user_input)
         bot_response = ''
-        countMatrix = CountVectorizer().fit_transform(sentence_list)
+        countMatrix = CountVectorizer().fit_transform(confluenceResponse)
         similarity_scores = cosine_similarity(countMatrix[-1], countMatrix)
         similarity_scores_list = similarity_scores.flatten()
         index = index_sort(similarity_scores_list)
@@ -135,7 +125,7 @@ def ask_the_bot(user_input):
         j = 0
         for i in range(len(index)):
                 if similarity_scores_list[index[i]] > 0.0:
-                        bot_response = bot_response+''+sentence_list[index[i]]
+                        bot_response = bot_response+''+confluenceResponse[index[i]]
                         response_flag = 1
                         j = j+1
                         if j > 2:
@@ -144,9 +134,9 @@ def ask_the_bot(user_input):
         if response_flag == 0:
                 bot_response = bot_response+' '+'I apologize, I did not understand.'
 
-        sentence_list.remove(user_input) """
+        confluenceResponse.remove(user_input)
 
-        return user_input
+        return bot_response
 
 # API
 app = Flask(__name__)
