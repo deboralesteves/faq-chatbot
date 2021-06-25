@@ -1,5 +1,9 @@
 from flask import Flask
 from atlassian import Confluence
+import os
+CONFLUENCE_URL = os.getenv('CONFLUENCE_URL')
+USER_EMAIL = os.getenv('USER_EMAIL')
+USER_TOKEN = os.getenv('USER_TOKEN')
 
 import re
 import random
@@ -13,15 +17,17 @@ import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 
+noSimilarityResponse = 'I apologize, I did not understand :( Please try to rephrase your message.'
+
 #Download the punkt package
 nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
 
 # Confluence connection
 try: 
-        confluenceUrl = 'https://liqid-investments.atlassian.net/'
-        email = ''
-        apiToken = ''
+        confluenceUrl = CONFLUENCE_URL
+        email = USER_EMAIL
+        apiToken = USER_TOKEN
 
         confluence = Confluence(
         url=confluenceUrl,
@@ -73,6 +79,7 @@ def query_confluence(user_input):
 
         try: 
                 cql= 'text ~ "' + user_input + '" and type = page'
+                # html removal
                 regex = re.compile('<.*?>')
                 articles_list = []
 
@@ -132,9 +139,7 @@ def ask_the_bot(user_input):
                                 break
         
         if response_flag == 0:
-                bot_response = bot_response+' '+'I apologize, I did not understand.'
-
-        confluenceResponse.remove(user_input)
+                bot_response = bot_response+' '+ noSimilarityResponse
 
         return bot_response
 
@@ -154,7 +159,7 @@ def chat(userMessage):
                 if tokenized_user_message:
                         response = ask_the_bot(tokenized_user_message)
                 else:
-                        response = "Sorry, I didn't understand"
+                        response = noSimilarityResponse
 
  
         return { "messages": [response] }
