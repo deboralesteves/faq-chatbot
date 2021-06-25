@@ -45,12 +45,15 @@ def tokenize_user_message(user_input):
         # remove non alphabetic values
         words_list = [word for word in words_list if word.isalpha()]
 
-        if detect(user_input) is 'de':
-                stop_words = set(nltk.corpus.stopwords.words('german'))
-        else:
-                stop_words = set(nltk.corpus.stopwords.words('english'))
+        if(len(words_list)):
 
-        words_list = [w for w in words_list if not w in stop_words]
+                if detect(user_input) is 'de':
+                        stop_words = set(nltk.corpus.stopwords.words('german'))
+                else:
+                        stop_words = set(nltk.corpus.stopwords.words('english'))
+
+                words_list = [w for w in words_list if not w in stop_words]
+
         words = ' '.join(words_list)
 
         return words
