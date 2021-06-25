@@ -1,38 +1,67 @@
-.App {
+.app {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  background-color: #f0f0f3;
+  color: #ffffff;
   min-height: 100vh;
   display: flex;
+  box-sizing: border-box;
+}
+
+.chatArea {
+  margin: auto;
+  height: 800px;
+  width: 800px;
+}
+
+.messagesArea {
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  overflow-y: scroll;
+  height: 500px;
+  padding: 15px;
+  background-color: #ffffff;
+  color: #000000;
 }
 
-.App-link {
-  color: #61dafb;
+.message {
+  width: 350px;
+  padding: 15px;
+  margin-bottom: 15px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.botMessage {
+  color: #ffffff;
+  background-color: #076283;
+}
+
+.userMessage {
+  color: #ffffff;
+  background-color: #ccc;
+  align-self: flex-end;
+  overflow-wrap: break-word;
+}
+
+.textArea {
+  border-color: #ccc;
+  height: 100px;
+  width: 100%;
+  resize: none;
+  box-sizing: border-box;
+  outline: none;
+  padding: 5px;
+}
+
+.sendButton:disabled {
+  opacity: 0.75;
+}
+
+.sendButton {
+  height: 50px;
+  width: 100%;
+  cursor: pointer;
+  background-color: #ef233c;
+  color: #ffffff;
+  border-bottom-left-radius: 12px;
+  border: none;
+  margin-top: -4px;
 }
