@@ -5,7 +5,7 @@ function App() {
   const [userMessage, setUserMessage] = useState("");
   const [messages, setMessages] = useState([
     {
-      text: "Hi there! I am Liot, how can I help you today?",
+      text: "Hi there! I am DeBot, how can I help you today?",
       sender: "bot",
     },
   ]);

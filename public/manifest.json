@@ -1,6 +1,6 @@
 {
-  "short_name": "Liot",
-  "name": "Liot - FAQ Chatbot",
+  "short_name": "DeBot",
+  "name": "DeBot - FAQ Chatbot",
   "version": "0.1.0",
   "description": "A FAQ Chatbot built with React and Flask.",
   "developer": {

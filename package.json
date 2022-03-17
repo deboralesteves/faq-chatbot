@@ -9,8 +9,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "start": "react-scripts start",
-    "start-api": "cd api && venv/bin/flask run --no-debugger",
+    "client": "react-scripts start",
+    "api": "cd api && .venv/bin/flask run --no-debugger",
+    "req": "pip install -r requirements.txt",
     "build": "react-scripts build"
   },
   "dependencies": {

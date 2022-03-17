@@ -7,7 +7,6 @@ USER_TOKEN = os.getenv('USER_TOKEN')
 
 import re
 import random
-import string
 import json
 import nltk
 from langdetect import detect
